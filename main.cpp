@@ -5,8 +5,10 @@
 #endif
 #ifdef __APPLE__
 #include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
 #else
 #include <SDL.h>
+#include "SDL_image.h"
 #endif
 
 int main ( int argc, char** argv )
@@ -31,17 +33,25 @@ int main ( int argc, char** argv )
     }
 
     // load an image
-    SDL_Surface* bmp = SDL_LoadBMP("cb.bmp");
-    if (!bmp)
+    SDL_Surface* image = IMG_Load("resources/img/metal-ball.png");
+    if (!image)
     {
-        printf("Unable to load bitmap: %s\n", SDL_GetError());
+        printf("Unable to load image: %s\n", SDL_GetError());
         return 1;
     }
-    
+
+    // load an image glare
+    SDL_Surface* glare = IMG_Load("resources/img/glare.png");
+    if (!glare)
+    {
+        printf("Unable to load glare image: %s\n", SDL_GetError());
+        return 1;
+    }
+
     // centre the bitmap on screen
     SDL_Rect dstrect;
-    dstrect.x = (screen->w - bmp->w) / 2;
-    dstrect.y = (screen->h - bmp->h) / 2;
+    dstrect.x = (screen->w - image->w) / 2;
+    dstrect.y = (screen->h - image->h) / 2;
 
     // program main loop
     bool done = false;
@@ -71,12 +81,13 @@ int main ( int argc, char** argv )
         } // end of message processing
 
         // DRAWING STARTS HERE
-        
+
         // clear screen
         SDL_FillRect(screen, 0, SDL_MapRGB(screen->format, 0, 0, 0));
 
-        // draw bitmap
-        SDL_BlitSurface(bmp, 0, screen, &dstrect);
+        // draw ball and its' glare
+        SDL_BlitSurface(image, 0, screen, &dstrect);
+        SDL_BlitSurface(glare, 0, screen, &dstrect);
 
         // DRAWING ENDS HERE
 
@@ -85,7 +96,8 @@ int main ( int argc, char** argv )
     } // end main loop
 
     // free loaded bitmap
-    SDL_FreeSurface(bmp);
+    SDL_FreeSurface(image);
+    SDL_FreeSurface(glare);
 
     // all is well ;)
     printf("Exited cleanly\n");
