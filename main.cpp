@@ -5,7 +5,7 @@
 #endif
 #ifdef __APPLE__
 #include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
+#include "SDL/SDL_image.h"
 #else
 #include <SDL.h>
 #include "SDL_image.h"
